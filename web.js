@@ -1,7 +1,10 @@
 var express = require('express');
 var http = require('http');
 var mongodb = require('mongodb');
-var _ = require("./underscore-min");
+var bodyParser = require('body-parser');
+//var multer = require('multer'); 
+
+//var _ = require("./underscore-min");
 
 var ObjectId = mongodb.ObjectID;
 
@@ -11,6 +14,8 @@ var uri = 'mongodb://admin:energetico@ds239439.mlab.com:39439/energias';
 var app = express();
 var server = http.createServer(app);
 
+app.use(express.static('public'));
+
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', "*");
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -18,6 +23,10 @@ var allowCrossDomain = function(req, res, next) {
     next();
 }
 app.use(allowCrossDomain);
+app.use(bodyParser.json()); // for parsing application/json
+//app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+//app.use(multer()); // for parsing multipart/form-data
+
 
 var puerto = process.env.PORT || 3000;
 server.listen(puerto);    
@@ -29,16 +38,20 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     app.get('/getMediciones/:medidor', function(request, response){
 		var medidor = request.params.medidor.toString();
 		
-		var col_mediciones = client.db('Energias').collection('mediciones');
+        console.log(medidor);
+        
+		var col_mediciones = client.db('energias').collection('mediciones');
 		col_mediciones.find({}).toArray(function(err, mediciones){
+            console.log("error:" + err);
+            console.log("mediciones:" + mediciones);
 			response.send(JSON.stringify(mediciones));
 		});	
 	});
     
     app.post('/guardarMedicion', function(request, response){
-		console.log("guardando");
 		var medicion = request.body.medicion;
-		var col_mediciones = client.db('Energias').collection('mediciones');
+        console.log(medicion);
+		var col_mediciones = client.db('energias').collection('mediciones');
 		
 		col_mediciones.save(medicion, function(){
 			if(err) throw err;
