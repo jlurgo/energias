@@ -22,22 +22,25 @@ app.use(allowCrossDomain);
 var puerto = process.env.PORT || 3000;
 server.listen(puerto);    
 
-console.log('Servidor vortex escuchando en puerto ' + puerto);
+console.log('Servidor escuchando en puerto ' + puerto);
 
-mongodb.MongoClient.connect(uri, function(err, db) {  
+mongodb.MongoClient.connect(uri, function(err, client) {  
+	
     app.get('/getMediciones/:medidor', function(request, response){
 		var medidor = request.params.medidor.toString();
 		
-		var col_mediciones = db.collection('mediciones');
+		var col_mediciones = client.db('Energias').collection('mediciones');
 		col_mediciones.find({}).toArray(function(err, mediciones){
 			response.send(JSON.stringify(mediciones));
 		});	
 	});
     
     app.post('/guardarMedicion', function(request, response){
+		console.log("guardando");
 		var medicion = request.body.medicion;
+		var col_mediciones = client.db('Energias').collection('mediciones');
 		
-		db.collection('mediciones').save(medicion, function(){
+		col_mediciones.save(medicion, function(){
 			if(err) throw err;
 			response.send("ok");
 		});
