@@ -2,6 +2,7 @@ var express = require('express');
 var http = require('http');
 var mongodb = require('mongodb');
 var bodyParser = require('body-parser');
+var path = require('path');
 //var multer = require('multer'); 
 
 //var _ = require("./underscore-min");
@@ -14,7 +15,8 @@ var uri = 'mongodb://admin:energetico@ds239439.mlab.com:39439/energias';
 var app = express();
 var server = http.createServer(app);
 
-app.use(express.static('public'));
+process.env.PWD = process.cwd();
+app.use(express.static(path.join(process.env.PWD, 'public')));
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', "*");
