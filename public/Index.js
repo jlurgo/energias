@@ -1,7 +1,7 @@
 $(function(){
     $("#btn_subirMedicion").click(function(){
         $.ajax({
-			url: "http://localhost:3000/guardarMedicion",
+			url: "guardarMedicion",
 			type: "POST",
 			async: true,
             dataType: "json",
