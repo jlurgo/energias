@@ -51,11 +51,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 	});
     
     app.post('/guardarMedicion', function(request, response){
-		var medicion = request.body.medicion;
-        console.log(medicion);
+		var mediciones = request.body;
+        console.log(request.body);
 		var col_mediciones = client.db('energias').collection('mediciones');
 		
-		col_mediciones.save(medicion, function(){
+		col_mediciones.save(mediciones, function(){
 			if(err) throw err;
 			response.send("ok");
 		});
